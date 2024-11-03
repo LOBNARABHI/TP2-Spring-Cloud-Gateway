@@ -1,0 +1,26 @@
+<div class="container">
+  <table class="table" *ngIf="orders">
+    <thead>
+    <tr>
+      <th>Invoice ID</th>
+      <th>Billing Date</th>
+      <th>Customer ID</th>
+      <th>Product Items</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let order of orders">
+      <td>{{ order.id }}</td>
+      <td>{{ order.billingDate | date: 'short' }}</td>
+      <td>{{ order.customerId }}</td>
+      <td>
+        <ul>
+          <li *ngFor="let item of order.productItems">
+            Product ID: {{ item.productID }} - Quantity: {{ item.quantity }} - Price: {{ item.price }}
+          </li>
+        </ul>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

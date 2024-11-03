@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class BillingRestController {
     private BillRepository billRepository;
@@ -34,6 +36,24 @@ public class BillingRestController {
             pi.setProduct(product);
         });
         return  bill;
+    }
+
+    // Nouvel endpoint pour récupérer les factures d'un client spécifique
+    @GetMapping(path = "/bills/customer/{customerId}")
+    public List<Bill> getBillsByCustomerId(@PathVariable(name = "customerId") Long customerId) {
+        List<Bill> bills = billRepository.findByCustomerId(customerId);
+
+        // Enrichir chaque facture avec les informations du client et des produits
+        bills.forEach(bill -> {
+            Customer customer = customerRestClient.getCustomerById(bill.getCustomerId());
+            bill.setCustomer(customer);
+            bill.getProductItems().forEach(pi -> {
+                Product product = productItemRestClient.getProductsById(pi.getProductID());
+                pi.setProduct(product);
+            });
+        });
+
+        return bills;
     }
 
 }
